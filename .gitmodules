@@ -1,0 +1,3 @@
+[submodule "firmware/nuc1263bsp"]
+	path = firmware/nuc1263bsp
+	url = https://github.com/OpenNuvoton/nuc1263bsp.git

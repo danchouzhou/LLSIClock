@@ -1,0 +1,71 @@
+/****************************************************************************
+ * @file     NUC1263LD4CE(LQFP48).ncfg
+ * @version  v1.33.0005
+ * @Date     Mon Feb 17 2025 15:31:50 GMT+0800 (台北標準時間)
+ * @brief    NuMicro config file
+ *
+ * @note Please do not modify this file.
+ *       Otherwise, it may not be loaded successfully.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (C) 2013-2025 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
+MCU:NUC1263LD4CE(LQFP48)
+Pin1:LLSI4_OUT
+Pin2:LLSI5_OUT
+Pin3:PB.3
+Pin4:PB.2
+Pin5:PB.1
+Pin6:PB.0
+Pin7:PA.11
+Pin8:PA.10
+Pin9:PA.9
+Pin10:VDDIO0
+Pin11:PF.5
+Pin12:PF.4
+Pin13:PF.3
+Pin14:PF.2
+Pin15:PA.7
+Pin16:PA.6
+Pin17:PA.5
+Pin18:PA.4
+Pin19:PA.3
+Pin20:PA.2
+Pin21:PA.1
+Pin22:PA.0
+Pin23:VDDIO1
+Pin24:nRESET
+Pin25:ICE_DAT
+Pin26:ICE_CLK
+Pin27:LLSI0_OUT
+Pin28:LLSI1_OUT
+Pin29:LLSI2_OUT
+Pin30:LLSI3_OUT
+Pin31:PC.1
+Pin32:PC.0
+Pin33:USB_VBUS
+Pin34:USB_D-
+Pin35:USB_D+
+Pin36:USB_VDD33_CAP
+Pin37:VSS
+Pin38:LDO_CAP
+Pin39:VDD
+Pin40:PC.14
+Pin41:DAC3_OUT
+Pin42:DAC2_OUT
+Pin43:DAC1_OUT
+Pin44:DAC0_OUT
+Pin45:AVDD
+Pin46:AVss
+Pin47:PB.7
+Pin48:PB.6
+SYS->GPA_MFPH = 0x00000000
+SYS->GPA_MFPL = 0x00000000
+SYS->GPB_MFPH = 0x11110000
+SYS->GPB_MFPL = 0x00CC0000
+SYS->GPC_MFPH = 0x00000000
+SYS->GPC_MFPL = 0x00FFFF00
+SYS->GPF_MFPL = 0x000000EE
+LockedPins=[]
+/*** (C) COPYRIGHT 2013-2025 Nuvoton Technology Corp. ***/
