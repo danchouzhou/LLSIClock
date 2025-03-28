@@ -12,30 +12,10 @@ volatile uint32_t g_au32frameBuffer[24] = {
     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
 };
 volatile uint32_t g_u32PatternToggle = 0;
-volatile uint32_t g_u32DataCount = 0;
 volatile uint32_t g_u32FrameEnd = 0;
 
 void LLSI0_IRQHandler()
 {
-    if (LLSI_GetIntFlag(LLSI0, LLSI_TXTH_INT_MASK))
-    {
-        while(LLSI_GET_TX_FIFO_FULL_FLAG(LLSI0) == 0) // Fill up the TX FIFO
-        {
-            if (g_u32DataCount == (TEST_COUNT - 1))
-                LLSI_SET_LAST_DATA(LLSI0); // Before writing last word data to LLSI_DATA, user must write LDT = 1
-            
-            if (g_u32DataCount < TEST_COUNT)
-                LLSI_WRITE_DATA(LLSI0, g_au32frameBuffer[g_u32DataCount++]);
-            else
-                break;
-        }
-
-        if(g_u32DataCount >= TEST_COUNT)
-        {
-            LLSI_DisableInt(LLSI0, LLSI_TXTH_INT_MASK);
-        }
-    }
-
     if (LLSI_GetIntFlag(LLSI0, LLSI_FEND_INT_MASK)) // FENDIF will be set to 1 when LLSI transfer last pixel data.
     {
         g_u32FrameEnd = 1;
@@ -67,6 +47,9 @@ void SYS_Init(void)
     /* Enable LLSI0 module clock */
     CLK_EnableModuleClock(LLSI0_MODULE);
 
+    /* Enable PDMA peripheral clock */
+    CLK_EnableModuleClock(PDMA_MODULE);
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -89,20 +72,38 @@ void UART0_Init()
     UART_Open(UART0, 115200);
 }
 
+void PDMA_Init(void)
+{
+    /* Reset PDMA module */
+    SYS_ResetModule(PDMA_RST);
+
+    /* Open Channel 0 */
+    PDMA_Open(1 << 0);
+
+    /* Transfer count is TEST_COUNT, transfer width is 32 bits(one word) */
+    PDMA_SetTransferCnt(0, PDMA_WIDTH_32, TEST_COUNT);
+
+    /* Transfer type is single transfer */
+    PDMA_SetBurstType(0, PDMA_REQ_SINGLE, 0);
+
+    /* Set source address is g_au32frameBuffer, destination address is &LLSI0->DATA */
+    PDMA_SetTransferAddr(0, (uint32_t)g_au32frameBuffer, PDMA_SAR_INC, (uint32_t)&LLSI0->DATA, PDMA_DAR_FIX);
+
+    /* Request source is LLSI0 */
+    PDMA_SetTransferMode(0, PDMA_LLSI0, FALSE, 0);
+}
+
 void LLSI_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init LLSI                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Configure as software mode, RGB output format, 24 pixels in a frame and idle output low */
+    /* Configure as PDMA mode, RGB output format, 24 pixels in a frame and idle output low */
     /* Set clock divider. LLSI clock rate = 72MHz */
     /* Set data transfer period. T_Period = 1250ns */
     /* Set duty period. T_T0H = 400ns; T_T1H = 850ns */
     /* Set reset command period. T_ResetPeriod = 50000ns */
-    LLSI_Open(LLSI0, LLSI_MODE_SW, LLSI_FORMAT_RGB, HCLK_CLK, 1250, 400, 850, 50000, 32, LLSI_IDLE_LOW);
-
-    /* Set TX FIFO threshold */
-    LLSI_SetFIFO(LLSI0, 2);
+    LLSI_Open(LLSI0, LLSI_MODE_PDMA, LLSI_FORMAT_RGB, HCLK_CLK, 1250, 400, 850, 50000, 32, LLSI_IDLE_LOW);
 
     /* Enable reset command function */
     LLSI_ENABLE_RESET_COMMAND(LLSI0);
@@ -128,13 +129,14 @@ void main(void)
 
     printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
 
+    /* Init PDMA */
+    PDMA_Init();
+
     /* Init LLSI */
     LLSI_Init();
 
-    /* Enable Transmit FIFO Threshold Interrupt and Frame End Interrupt */
-    LLSI_EnableInt(LLSI0, LLSI_TXTH_INT_MASK | LLSI_FEND_INT_MASK);
-
-    LLSI_WRITE_DATA(LLSI0, g_au32frameBuffer[g_u32DataCount++]); // Write the first word to trigger TXTH_INT
+    /* Enable Frame End Interrupt */
+    LLSI_EnableInt(LLSI0, LLSI_FEND_INT_MASK);
 
     while(1)
     {
@@ -152,10 +154,10 @@ void main(void)
             }
 
             g_u32FrameEnd = 0;
-            g_u32DataCount = 0;
 
-            LLSI_EnableInt(LLSI0, LLSI_TXTH_INT_MASK);
-            
+            PDMA_SetTransferCnt(0, PDMA_WIDTH_32, TEST_COUNT);
+            PDMA->DSCT[0].CTL = (PDMA->DSCT[0].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_BASIC;
+
             CLK_SysTickDelay(50000);
         }
     }
