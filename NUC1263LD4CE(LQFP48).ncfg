@@ -1,7 +1,7 @@
 /****************************************************************************
  * @file     NUC1263LD4CE(LQFP48).ncfg
  * @version  v1.33.0005
- * @Date     Mon Feb 17 2025 15:31:50 GMT+0800 (台北標準時間)
+ * @Date     Sun Mar 16 2025 03:43:12 GMT+0800 (台北標準時間)
  * @brief    NuMicro config file
  *
  * @note Please do not modify this file.
@@ -24,8 +24,8 @@ Pin9:PA.9
 Pin10:VDDIO0
 Pin11:PF.5
 Pin12:PF.4
-Pin13:PF.3
-Pin14:PF.2
+Pin13:XT1_IN
+Pin14:XT1_OUT
 Pin15:PA.7
 Pin16:PA.6
 Pin17:PA.5
@@ -52,20 +52,26 @@ Pin37:VSS
 Pin38:LDO_CAP
 Pin39:VDD
 Pin40:PC.14
-Pin41:DAC3_OUT
-Pin42:DAC2_OUT
-Pin43:DAC1_OUT
-Pin44:DAC0_OUT
+Pin41:PB.15
+Pin42:PB.14
+Pin43:PB.13
+Pin44:PB.12
 Pin45:AVDD
 Pin46:AVss
 Pin47:PB.7
 Pin48:PB.6
+GPIOpin:19
+GPIOpin:20
+GPIOpin:21
+GPIOpin:18
+GPIOpin:42
+GPIOpin:43
 SYS->GPA_MFPH = 0x00000000
 SYS->GPA_MFPL = 0x00000000
-SYS->GPB_MFPH = 0x11110000
+SYS->GPB_MFPH = 0x00000000
 SYS->GPB_MFPL = 0x00CC0000
 SYS->GPC_MFPH = 0x00000000
 SYS->GPC_MFPL = 0x00FFFF00
-SYS->GPF_MFPL = 0x000000EE
+SYS->GPF_MFPL = 0x0000AAEE
 LockedPins=[]
 /*** (C) COPYRIGHT 2013-2025 Nuvoton Technology Corp. ***/

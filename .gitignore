@@ -6,8 +6,8 @@
 
 # User specified
 *.zip
-003Clock_gbr
-2137160001.stp
+LLSIClock_gbr
+non-free
 
 # For PCBs designed using KiCad: https://www.kicad.org/
 # Format documentation: https://kicad.org/help/file-formats/
