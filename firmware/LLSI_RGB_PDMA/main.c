@@ -102,7 +102,7 @@ void LLSI_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init LLSI                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Configure as software mode, RGB output format, 8 pixels in a frame and idle output low */
+    /* Configure as PDMA mode, RGB output format, 8 pixels in a frame and idle output low */
     /* Set clock divider. LLSI clock rate = 72MHz */
     /* Set data transfer period. T_Period = 1250ns */
     /* Set duty period. T_T0H = 400ns; T_T1H = 850ns */
