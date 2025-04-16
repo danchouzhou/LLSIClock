@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 #include "NuMicro.h"
 
 #define HCLK_CLK    72000000
